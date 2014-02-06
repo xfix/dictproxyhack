@@ -53,9 +53,12 @@ def _add_isinstance_tomfoolery(cls):
     # oh boy!  This is only a problem when using the super fallback of just
     # writing a class, because it ends up with ABCMeta tacked on.
     try:
-        from sets import Set as set
+        # Try to access function that already exists. If it doesn't, it will
+        # cause an exception, which will load its implementation from Set
+        # module.
+        set
     except NameError:
-        pass
+        from sets import Set as set
 
     metas = set([type(supercls) for supercls in cls.__mro__])
     metas.discard(type)
